@@ -17,8 +17,11 @@ export default async function getServerSideProps(req, res) {
         let currentDate = 0
         if (inputDate == undefined) {
             const date = new Date();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
+            const utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+            const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+            const kr_curr = new Date(utc + KR_TIME_DIFF);
+            let month = kr_curr.getMonth() + 1;
+            let day = kr_curr.getDate();
             if (month < 10) {
                 month = '0' + month;
             }
@@ -26,7 +29,7 @@ export default async function getServerSideProps(req, res) {
                 day = '0' + day;
             }
             
-            currentDate = `${date.getFullYear()}${month}${day}`;
+            currentDate = `${kr_curr.getFullYear()}${month}${day}`;
         }
         else 
         {
