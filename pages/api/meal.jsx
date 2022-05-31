@@ -1,5 +1,6 @@
 export default async function getServerSideProps(req, res) {
     const schoolname = req.query.schoolname;
+    const inputDate = req.query.date;
     async function getSchoolInfo() {
         const response = fetch(`http://${req.rawHeaders[1]}/fetch/schoolID/${schoolname}`);
         const res = await response;
@@ -13,28 +14,38 @@ export default async function getServerSideProps(req, res) {
         type = 2;
     }
     async function getMeal() {
-        const date = new Date();
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        if (month < 10) {
-            month = '0' + month;
+        let currentDate = 0
+        if (inputDate == undefined) {
+            const date = new Date();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            if (month < 10) {
+                month = '0' + month;
+            }
+            if (day < 10) {
+                day = '0' + day;
+            }
+            
+            currentDate = `${date.getFullYear()}${month}${day}`;
         }
-        if (day < 10) {
-            day = '0' + day;
+        else 
+        {
+            currentDate = inputDate;
         }
-        const currentDate = `${date.getFullYear()}${month}${day}`;
         const response = fetch(`https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&pIndex=1&pSize=100&MLSV_YMD=${currentDate}&ATPT_OFCDC_SC_CODE=${officeID}&SD_SCHUL_CODE=${schoolID}`);
         const res = await response;
         return await res.json();
     }
     
     const meal = await getMeal();
-
+    if (meal.mealServiceDietInfo == undefined) {
+        return res.json({menu: 'No Data', calorie:'No Data', nutrient:'No Data'});
+    }
     const data = meal.mealServiceDietInfo[1].row;
     for (let i = 0; i < data.length; i++) {
             if (data[i]['MMEAL_SC_CODE'] == type) {
                 return res.json({
-                    menu: data[i]['DDISH_NM'].replaceAll('<br/>', ' ').replaceAll('*',''),
+                    menu: data[i]['DDISH_NM'].replace(/^\s+|<br\/>/g, '').replace(/\([^)]*\)/g, "").replaceAll('*', ''),
                     calorie: data[i]['CAL_INFO'],
                     nutrient: data[i]['NTR_INFO'].replaceAll('<br/>', ' '),
                 });
