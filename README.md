@@ -24,5 +24,6 @@ localhost:3000/api/meal?schoolname=개포고등학교&type=2&date=20220602
     "allergie": []
 }
 </p>
-
+<h2>오픈소스 라이선스</h2>
+<h4>해당 프로젝트는 MIT 라이선스에 의거하여 자유롭게 사용할 수 있습니다.</h4>
 
