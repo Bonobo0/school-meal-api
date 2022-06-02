@@ -15,12 +15,12 @@ API Endpoint: {host}/api/meal?schoolname=학교이름&type=급식타입&date=YYY
 localhost:3000/api/meal?schoolname=개포고등학교&type=2&date=20220602
 </p>
 <h2>예시 결과</h2>
-<p style="font-size:20px">
-```{
+<p style="font-size:20px;">
+{
     "menu" : "",
     "calorie" : 0,
     "nutrient": ""
-}```
+}
 </p>
 
 
