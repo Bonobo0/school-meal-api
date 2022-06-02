@@ -28,6 +28,9 @@ export default async function getServerSideProps(req, res) {
         return await res.json();
     }
     const schoolInfo = await getSchoolInfo();
+    if (schoolInfo.schoolInfo == undefined){
+        return res.json({ menu: 'No Data', calorie:'No Data', nutrient:'No Data', allergie: 'No Data'});
+    }
     const schoolID = schoolInfo.schoolInfo[1].row[0].SD_SCHUL_CODE;
     const officeID = schoolInfo.schoolInfo[1].row[0].ATPT_OFCDC_SC_CODE;
     let currentDate = 0;
@@ -77,7 +80,6 @@ export default async function getServerSideProps(req, res) {
                     const set = new Set(allergies);
                     allergies = [...set];
                     allergies.splice("", 1);
-                    console.log(allergies)
                     for (let j = 0; j < allergies.length; j++) {
                         if (allergieKorean[allergies[j]] != null)
                         {
